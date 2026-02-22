@@ -1,10 +1,11 @@
 import { Router } from "express";
+import { register, login, logout, refresh } from "../controllers/auth.controller.js";
 
 let router=Router();
 
-router.post('/register')
-router.post('/login')
-router.post('/logout')
-router.post('/refresh')
+router.post('/register',register)
+router.post('/login',login)
+router.post('/logout',logout)
+router.post('/refresh',refresh)
 
 export default router;
