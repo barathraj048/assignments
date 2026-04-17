@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/products"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Place Order</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <h2>Product ID: {{ productId }}</h2>
+
+  <ion-item>
+    <ion-label position="floating">Quantity</ion-label>
+    <ion-input
+      type="number"
+      [(ngModel)]="quantity"
+      min="1"
+      [disabled]="isSubmitting">
+    </ion-input>
+  </ion-item>
+
+  <ion-button 
+    expand="block" 
+    color="success" 
+    (click)="submitOrder()"
+    [disabled]="isSubmitting"
+    style="margin-top: 20px;">
+    {{ isSubmitting ? 'Submitting...' : 'Submit Order' }}
+  </ion-button>
+
+  <div *ngIf="resultMessage" 
+       style="color: green; margin-top: 20px; white-space: pre-line; padding: 15px; background: #d4edda; border-radius: 5px;">
+    {{ resultMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" 
+       style="color: red; margin-top: 20px; padding: 15px; background: #f8d7da; border-radius: 5px;">
+    ❌ {{ errorMessage }}
+  </div>
+
+</ion-content>

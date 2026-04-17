@@ -123,3 +123,4 @@ D:\WEB DEV\project\assignment\GroceryOrderSystem\src\GroceryOrderSystem.API\obj\
 D:\WEB DEV\project\assignment\GroceryOrderSystem\src\GroceryOrderSystem.API\obj\Debug\net10.0\GroceryOrderSystem.API.pdb
 D:\WEB DEV\project\assignment\GroceryOrderSystem\src\GroceryOrderSystem.API\obj\Debug\net10.0\GroceryOrderSystem.API.genruntimeconfig.cache
 D:\WEB DEV\project\assignment\GroceryOrderSystem\src\GroceryOrderSystem.API\obj\Debug\net10.0\ref\GroceryOrderSystem.API.dll
+D:\WEB DEV\project\assignment\GroceryOrderSystem\src\GroceryOrderSystem.API\obj\Debug\net10.0\GroceryOrderSystem.API.sourcelink.json
