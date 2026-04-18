@@ -406,7 +406,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600" />
-            <span className="text-sm text-white/40">GolfHero © 2024</span>
+            <span className="text-sm text-white/40">GolfHero © 2026</span>
           </div>
           <div className="flex gap-6 text-sm text-white/30">
             <Link href="/privacy" className="hover:text-white/60">Privacy</Link>
