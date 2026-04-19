@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { CheckCircle, Trophy, Target, Heart, ArrowRight, Loader2 } from 'lucide-react'
+import { CheckCircle, Trophy, Target, Heart, ArrowRight, Loader2, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
@@ -13,23 +13,21 @@ function WelcomeContent() {
   const sessionId = searchParams.get('session_id')
   const supabase = createClient()
 
-  const [status, setStatus] = useState<'checking' | 'ready' | 'slow'>('checking')
+  const [status, setStatus] = useState<'checking' | 'activating' | 'ready' | 'slow' | 'error'>('checking')
   const [attempts, setAttempts] = useState(0)
+  const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
-    // Poll for subscription to appear in DB (webhook may take a few seconds)
     let tries = 0
-    const maxTries = 20 // 20 × 1.5s = 30s max wait
+    let stopped = false
 
     async function checkSubscription() {
+      if (stopped) return
       tries++
       setAttempts(tries)
 
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        router.push('/login')
-        return
-      }
+      if (!user) { router.push('/login'); return }
 
       const { data: sub } = await supabase
         .from('subscriptions')
@@ -38,26 +36,38 @@ function WelcomeContent() {
         .in('status', ['active', 'trialing'])
         .maybeSingle()
 
-      if (sub) {
-        setStatus('ready')
+      if (sub) { setStatus('ready'); return }
+
+      // After 5 polls (~7.5s), try direct Stripe session lookup as fallback
+      // This handles missing/broken STRIPE_WEBHOOK_SECRET
+      if (tries === 5 && sessionId) {
+        setStatus('activating')
+        try {
+          const res = await fetch('/api/stripe/activate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId }),
+          })
+          const data = await res.json()
+          if (data.activated) { setStatus('ready'); return }
+          console.error('Manual activation failed:', data.error)
+        } catch (e) {
+          console.error('Activate fetch error:', e)
+        }
+      }
+
+      if (tries >= 20) {
+        setStatus('error')
+        setErrorMsg('Your payment was received but account setup is delayed. Please refresh or contact support.')
         return
       }
 
-      if (tries >= maxTries) {
-        // Give up waiting — let them in anyway, the subscription may come via webhook
-        setStatus('ready')
-        return
-      }
-
-      if (tries >= 5) {
-        setStatus('slow') // Show "taking a moment" message after 7.5s
-      }
-
-      // Retry
+      if (tries >= 5) setStatus('slow')
       setTimeout(checkSubscription, 1500)
     }
 
     checkSubscription()
+    return () => { stopped = true }
   }, [])
 
   const steps = [
@@ -70,7 +80,6 @@ function WelcomeContent() {
     <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-6">
       <div className="max-w-md w-full text-center">
 
-        {/* Animated checkmark */}
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -104,7 +113,6 @@ function WelcomeContent() {
           Welcome to GolfHero. Your subscription is being activated.
         </motion.p>
 
-        {/* Progress steps */}
         <div className="space-y-3 mb-10">
           {steps.map((step, i) => (
             <motion.div
@@ -125,6 +133,9 @@ function WelcomeContent() {
               )}
               <span className={`text-sm font-medium ${step.done ? 'text-white' : 'text-slate-500'}`}>
                 {step.label}
+                {i === 1 && status === 'activating' && (
+                  <span className="text-amber-400 ml-1 text-xs">(activating...)</span>
+                )}
               </span>
               {step.done && (
                 <motion.div
@@ -147,6 +158,35 @@ function WelcomeContent() {
           >
             Taking a moment longer than usual — your account is still being set up.
           </motion.p>
+        )}
+
+        {status === 'activating' && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-blue-400/80 text-sm mb-6"
+          >
+            Activating your account directly from payment data...
+          </motion.p>
+        )}
+
+        {status === 'error' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-red-900/30 border border-red-500/30 rounded-xl p-4 mb-6 text-left"
+          >
+            <div className="flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+              <p className="text-red-300 text-sm">{errorMsg}</p>
+            </div>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-3 text-xs text-red-400 underline"
+            >
+              Refresh page
+            </button>
+          </motion.div>
         )}
 
         {status === 'ready' ? (
@@ -172,11 +212,11 @@ function WelcomeContent() {
               Browse charities
             </Link>
           </motion.div>
-        ) : (
+        ) : status !== 'error' ? (
           <p className="text-slate-600 text-xs">
             Activating subscription... ({attempts} checks)
           </p>
-        )}
+        ) : null}
       </div>
     </div>
   )
