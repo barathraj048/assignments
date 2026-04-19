@@ -28,7 +28,7 @@ const STATUS_SCORE = {
   TERMINATED:                10,
 };
 
-const rankPublications = (publications, query) => {
+export const rankPublications = (publications, query) => {
   const terms = query.toLowerCase().split(/\s+/).filter(t => t.length > 3);
   return publications
     .map(pub => ({ ...pub, score: scorePublication(pub, terms) }))
@@ -36,7 +36,7 @@ const rankPublications = (publications, query) => {
     .slice(0, 8);
 };
 
-const rankTrials = (trials, disease) => {
+export const rankTrials = (trials, disease) => {
   const diseaseLower = disease.toLowerCase();
   return trials
     .map(trial => ({
@@ -47,5 +47,3 @@ const rankTrials = (trials, disease) => {
     .sort((a, b) => b.score - a.score)
     .slice(0, 6);
 };
-
-module.exports = { rankPublications, rankTrials };

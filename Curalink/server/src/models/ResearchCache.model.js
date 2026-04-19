@@ -1,5 +1,5 @@
 // server/src/models/ResearchCache.model.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const PublicationSchema = new mongoose.Schema({
   title:    String,
@@ -29,4 +29,4 @@ const CacheSchema = new mongoose.Schema({
   // ↑ TTL index: MongoDB deletes doc when expiresAt is reached
 });
 
-module.exports = mongoose.model('ResearchCache', CacheSchema);
+export default mongoose.model('ResearchCache', CacheSchema);

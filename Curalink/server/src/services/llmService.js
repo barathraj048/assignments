@@ -1,10 +1,10 @@
 // server/src/services/llmService.js
-const axios = require('axios');
+import axios from 'axios';
 
 const OLLAMA_URL   = process.env.OLLAMA_URL   || 'http://localhost:11434';
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3';
 
-const buildPrompt = (userMessage, patientContext, publications, trials, history = []) => {
+export const buildPrompt = (userMessage, patientContext, publications, trials, history = []) => {
 
   const pubContext = publications.map((p, i) => `
 [PUB ${i + 1}] ${p.title}
@@ -61,7 +61,7 @@ Respond in EXACTLY this format with no deviations:
   return { systemPrompt, userMessage };
 };
 
-const queryOllama = async ({ systemPrompt, userMessage }) => {
+export const queryOllama = async ({ systemPrompt, userMessage }) => {
   const { data } = await axios.post(
     `${OLLAMA_URL}/api/generate`,
     {
@@ -77,5 +77,3 @@ const queryOllama = async ({ systemPrompt, userMessage }) => {
   );
   return data.response || '';
 };
-
-module.exports = { buildPrompt, queryOllama };

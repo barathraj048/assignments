@@ -2,7 +2,8 @@ import { expandQuery }          from '../services/queryExpander.js';
 import { getPubMedPublications } from '../services/pubmedService.js';
 import { fetchOpenAlexWorks }    from '../services/openalexService.js';
 import { fetchClinicalTrials }   from '../services/trialsService.js';
-import { mergeResults, rankPublications, rankTrials } from '../services/aggregator.js';
+import { mergeResults } from '../services/aggregator.js';
+import { rankPublications, rankTrials } from '../services/ranker.js';
 import { buildPrompt, queryOllama } from '../services/llmService.js';
 import { buildStructuredResponse } from '../services/responseBuilder.js';
 import Session          from '../models/Session.model.js';
@@ -72,3 +73,5 @@ export const chat = async (req, res, next) => {
     res.json(structured);
   } catch (err) { next(err); }
 };
+
+export const chatStream = chat;

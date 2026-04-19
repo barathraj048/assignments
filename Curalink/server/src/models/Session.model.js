@@ -1,6 +1,6 @@
 
 // server/src/models/Session.model.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const MessageSchema = new mongoose.Schema({
   role: {
@@ -29,4 +29,4 @@ const SessionSchema = new mongoose.Schema({
   messages: [MessageSchema]
 }, { timestamps: true });
 
-module.exports = mongoose.model('Session', SessionSchema);
+export default mongoose.model('Session', SessionSchema);

@@ -1,9 +1,9 @@
 // server/test-retrieval.js  (delete after testing)
-require('dotenv').config();
-const { expandQuery }          = require('../services/queryExpander');
-const { getPubMedPublications } = require('../services/pubmedService');
-const { getOpenAlexPublications } = require('../services/openalexService');
-const { getClinicalTrials }     = require('../services/trialsService');
+import 'dotenv/config';
+import { expandQuery } from '../services/queryExpander.js';
+import { getPubMedPublications } from '../services/pubmedService.js';
+import { getOpenAlexPublications } from '../services/openalexService.js';
+import { getClinicalTrials } from '../services/trialsService.js';
 
 const run = async () => {
   const { pubmedQuery, openalexQuery, trialsQuery } =

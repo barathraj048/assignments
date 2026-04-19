@@ -1,5 +1,5 @@
 // server/src/services/trialsService.js
-const axios = require('axios');
+import axios from 'axios';
 
 const BASE = 'https://clinicaltrials.gov/api/v2/studies';
 
@@ -25,7 +25,7 @@ const normalizeTrial = (study) => {
   };
 };
 
-const getClinicalTrials = async ({ condition, term, location }, pageSize = 50) => {
+export const getClinicalTrials = async ({ condition, term, location }, pageSize = 50) => {
   let params = `query.cond=${encodeURIComponent(condition)}&pageSize=${pageSize}&format=json`;
   if (term)     params += `&query.term=${encodeURIComponent(term)}`;
   if (location) params += `&query.locn=${encodeURIComponent(location)}`;
@@ -34,4 +34,5 @@ const getClinicalTrials = async ({ condition, term, location }, pageSize = 50) =
   return (data.studies || []).map(normalizeTrial);
 };
 
-module.exports = { getClinicalTrials };
+export const fetchClinicalTrials = (condition, term, location, pageSize = 50) =>
+  getClinicalTrials({ condition, term, location }, pageSize);

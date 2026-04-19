@@ -1,5 +1,5 @@
 // server/src/services/queryExpander.js
-const expandQuery = (disease, query, location = '') => {
+export const expandQuery = (disease, query, location = '') => {
   const base = query
     ? `${query} ${disease}`
     : disease;
@@ -10,7 +10,7 @@ const expandQuery = (disease, query, location = '') => {
     : `${disease}[Title/Abstract]`;
 
   // OpenAlex: plain text search works best
-  const openalexQuery = base.trim().replace(/s+/g, '+');
+  const openalexQuery = base.trim().replace(/\s+/g, '+');
 
   // ClinicalTrials: disease is the condition field
   const trialsQuery = {
@@ -21,5 +21,3 @@ const expandQuery = (disease, query, location = '') => {
 
   return { base, pubmedQuery, openalexQuery, trialsQuery };
 };
-
-module.exports = { expandQuery };

@@ -1,8 +1,8 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-const Session  = require('../models/Session.model');
-const User     = require('../models/User.model');
-const Cache    = require('../models/ResearchCache.model');
+import 'dotenv/config';
+import mongoose from 'mongoose';
+import Session from '../models/Session.model.js';
+import User from '../models/User.model.js';
+import Cache from '../models/ResearchCache.model.js';
 
 async function test() {
   await mongoose.connect(process.env.MONGO_URI);

@@ -15,7 +15,7 @@ const formatSource = (pub) => ({
   snippet: (pub.abstract || '').slice(0, 200) + '...',
 });
 
-const buildStructuredResponse = (llmOutput, publications, trials) => {
+export const buildStructuredResponse = (llmOutput, publications, trials) => {
   const overview       = extractSection(llmOutput, 'OVERVIEW');
   const insights       = extractSection(llmOutput, 'INSIGHTS');
   const trialsSection  = extractSection(llmOutput, 'TRIALS');
@@ -24,6 +24,7 @@ const buildStructuredResponse = (llmOutput, publications, trials) => {
   // Fallback: if LLM ignored the format markers, return raw output
   if (!overview && !insights) {
     return {
+      raw:            llmOutput,
       overview:       llmOutput,
       insights:       '',
       trialsSection:  '',
@@ -34,6 +35,7 @@ const buildStructuredResponse = (llmOutput, publications, trials) => {
   }
 
   return {
+    raw: llmOutput,
     overview,
     insights,
     trialsSection,
@@ -42,5 +44,3 @@ const buildStructuredResponse = (llmOutput, publications, trials) => {
     trials,
   };
 };
-
-module.exports = { buildStructuredResponse };

@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import mongoose from 'mongoose';
-import chatRoutes from '../routes/chat.routes.js';
+import chatRoutes from './routes/chat.routes.js';
 import sessionRoutes from './routes/session.routes.js';
 import healthRoutes from './routes/health.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';

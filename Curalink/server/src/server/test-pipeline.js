@@ -1,14 +1,14 @@
 // server/test-pipeline.js  — DELETE after testing
-require('dotenv').config();
+import 'dotenv/config';
 
-const { expandQuery }             = require('../services/queryExpander');
-const { getPubMedPublications }   = require('../services/pubmedService');
-const { getOpenAlexPublications } = require('../services/openalexService');
-const { getClinicalTrials }       = require('../services/trialsService');
-const { mergeResults }            = require('../services/aggregator');
-const { rankPublications, rankTrials } = require('../services/ranker');
-const { buildPrompt, queryOllama }= require('../services/llmService');
-const { buildStructuredResponse } = require('../services/responseBuilder');
+import { expandQuery } from '../services/queryExpander.js';
+import { getPubMedPublications } from '../services/pubmedService.js';
+import { getOpenAlexPublications } from '../services/openalexService.js';
+import { getClinicalTrials } from '../services/trialsService.js';
+import { mergeResults } from '../services/aggregator.js';
+import { rankPublications, rankTrials } from '../services/ranker.js';
+import { buildPrompt, queryOllama } from '../services/llmService.js';
+import { buildStructuredResponse } from '../services/responseBuilder.js';
 
 const run = async () => {
   const disease = "Parkinson's disease";
@@ -51,7 +51,7 @@ const run = async () => {
   console.log('\nRECOMMENDATION:', response.recommendation?.slice(0, 200));
   console.log('\nSOURCES:',        response.sources?.length, 'cited');
   console.log('TRIALS COUNT:',     response.trials?.length, 'found');
-  console.log('\n✓ Phase 4 DONE. Full intelligence pipeline working.');
+  console.log('\nPhase 4 DONE. Full intelligence pipeline working.');
 };
 
 run().catch(console.error);

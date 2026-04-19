@@ -22,11 +22,9 @@ const deduplicatePublications = (publications) => {
   return unique;
 };
 
-const mergeResults = (pubmedResults, openalexResults, trials) => {
+export const mergeResults = (pubmedResults, openalexResults, trials) => {
   // PubMed first — it has better structured abstracts
   const combined = [...pubmedResults, ...openalexResults];
   const publications = deduplicatePublications(combined);
   return { publications, trials };
 };
-
-module.exports = { mergeResults };

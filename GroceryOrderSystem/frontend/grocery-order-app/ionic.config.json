@@ -1,7 +1,0 @@
-{
-  "name": "grocery-order-app",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone"
-}

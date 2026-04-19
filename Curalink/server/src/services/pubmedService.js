@@ -1,5 +1,5 @@
 // server/src/services/pubmedService.js
-const axios = require('axios');
+import axios from 'axios';
 
 const BASE  = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils';
 const KEY   = process.env.NCBI_API_KEY ? `&api_key=${process.env.NCBI_API_KEY}` : '';
@@ -19,18 +19,18 @@ const fetchPubMedDetails = async (ids) => {
 
 const parsePubMedXML = (xml) => {
   const results = [];
-  const articles = xml.match(/[sS]*?/g) || [];
+  const articles = xml.match(/<PubmedArticle>[\s\S]*?<\/PubmedArticle>/g) || [];
 
   articles.forEach(article => {
     const get = (tag) => {
-      const m = article.match(new RegExp(`<${tag}[^>]*>([\s\S]*?)`));
+      const m = article.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`));
       return m ? m[1].replace(/<[^>]+>/g, '').trim() : '';
     };
     const pmid    = get('PMID');
     const title   = get('ArticleTitle');
     const abs     = get('AbstractText');
-    const year    = get('PubDate').match(/d{4}/)?.[0] || '0';
-    const authors = [...article.matchAll(/([^<]+)/g)]
+    const year    = get('PubDate').match(/\d{4}/)?.[0] || '0';
+    const authors = [...article.matchAll(/<LastName[^>]*>([^<]+)<\/LastName>/g)]
       .map(m => m[1]).slice(0, 3);
 
     if (title) results.push({
@@ -43,9 +43,7 @@ const parsePubMedXML = (xml) => {
   return results;
 };
 
-const getPubMedPublications = async (query, retmax = 100) => {
+export const getPubMedPublications = async (query, retmax = 100) => {
   const ids = await searchPubMed(query, retmax);
   return fetchPubMedDetails(ids);
 };
-
-module.exports = { getPubMedPublications };

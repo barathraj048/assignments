@@ -1,5 +1,5 @@
 // server/src/services/openalexService.js
-const axios = require('axios');
+import axios from 'axios';
 
 const BASE = 'https://api.openalex.org/works';
 
@@ -35,7 +35,7 @@ const fetchPage = async (query, page) => {
   return (data.results || []).map(normalizeWork);
 };
 
-const getOpenAlexPublications = async (query) => {
+export const getOpenAlexPublications = async (query) => {
   const [page1, page2] = await Promise.all([
     fetchPage(query, 1),
     fetchPage(query, 2)
@@ -43,4 +43,4 @@ const getOpenAlexPublications = async (query) => {
   return [...page1, ...page2];
 };
 
-module.exports = { getOpenAlexPublications };
+export const fetchOpenAlexWorks = getOpenAlexPublications;
